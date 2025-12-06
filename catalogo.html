@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Doces Tia</title>
+    <link rel="stylesheet" href="Css/styles.css">
+    <link rel="stylesheet" href="Css/catalogo.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Catálogo de Doces</h1>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="pedido.html">Fazer Pedido</a>
+            <a href="catalogo.html">Catálogo</a>
+            <a href="carrinho.html">Carrinho</a>
+        </nav>
+    </header>
+
+    <section class="catalogo">
+
+        <!-- ITEM 1 -->
+        <div class="item">
+            <img src="Imagens/cone-trufado-dia-das-criancas.jpg" alt="Brigadeiro" style="width: 100%; height: auto;">
+            <h3>Brigadeiro</h3>
+            <p class="preco">R$ 1,50</p>
+
+            <div class="quantidade">
+                <button class="menos">-</button>
+                <input type="number" value="1" min="1">
+                <button class="mais">+</button>
+            </div>
+
+            <button class="btn add-carrinho">Adicionar ao Carrinho</button>
+        </div>
+
+        <!-- ITEM 2 -->
+        <div class="item">
+            <img src="Imagens/cone-trufado-dia-das-criancas.jpg" alt="Beijinho">
+            <h3>Beijinho</h3>
+            <p class="preco">R$ 1,50</p>
+
+            <div class="quantidade">
+                <button class="menos">-</button>
+                <input type="number" value="1" min="1">
+                <button class="mais">+</button>
+            </div>
+
+            <button class="btn add-carrinho">Adicionar ao Carrinho</button>
+        </div>
+
+    </section>
+
+    <script src="js/catalogo.js"></script>
+
+</body>
+
+</html>

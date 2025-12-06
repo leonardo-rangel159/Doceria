@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Pedido</title>
+    <link rel="stylesheet" href="Css/styles.css">
+    <link rel="stylesheet" href="Css/pedido.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Sweet Delícia - Finalizar Pedido</h1>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="carrinho.html">Carrinho</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h2>Confirme suas informações</h2>
+        <p>Finalize sua encomenda preenchendo o formulário abaixo.</p>
+    </section>
+
+    <main class="container carrinho-container">
+        <form id="itens-carrinho" name="pedido" class="formulario">
+
+            <h3>Dados do Cliente</h3>
+
+            <label>Nome completo:</label>
+            <input type="text" name="nome" placeholder="Ex: Maria Andrade" required>
+
+            <label>Telefone (WhatsApp):</label>
+            <input type="text" name="telefone" placeholder="(00) 90000-0000" required>
+
+            <h3>Detalhes da Encomenda</h3>
+            
+            <label>Doces escolhidos:</label>
+            <textarea id="lista-carrinho" name="doces_escolhidos" readonly></textarea>
+
+            <label>Data desejada para retirada/entrega:</label>
+            <input type="date" name="data" required>
+
+            <label>Observações:</label>
+            <textarea name="obs" placeholder="Ex: Sem lactose, presente, embrulho especial..."></textarea>
+
+            <label>Valor total:</label>
+            <input id="total" type="text" name="total" readonly>
+
+
+            <button type="submit" class="btn">Enviar Pedido</button>
+        </form>
+    </main>
+
+    <script src="js/config.js"></script><!-- Url da API -->
+    <script src="js/pedido.js"></script>
+    <script src="js/agendaBloqueo.js"></script>
+    <script src="js/agendaEnvio.js"></script>
+</body>
+
+</html>
