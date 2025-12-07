@@ -1,84 +1,337 @@
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #fff8f6;
-    }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fff8f6;
+}
 
-    header {
-        background: #ff9fb2;
-        color: white;
-        padding: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+header {
+    background: #ff9fb2;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    header a {
-        color: white;
-        text-decoration: none;
-        margin-left: 20px;
-        font-weight: bold;
-    }
+header a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+}
 
-    .hero {
-        text-align: center;
-        padding: 5px 20px;
-    }
+.hero {
+    text-align: center;
+    padding: 5px 20px;
+}
 
-    .container {
-        max-width: 600px;
-        margin: 0 auto;
-        margin-top: -25px;
-        padding: 20px;
-    }
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: -25px;
+    padding: 20px;
+}
 
-    .formulario {
-        background: #ffffff;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-    }
+.formulario {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
 
-    .formulario h3 {
-        margin-top: 0;
-        color: #ff7a8a;
-    }
+.formulario h3 {
+    color: #ff7a8a;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+.topF {
+    margin-top: 0;
+}
 
-    label {
-        display: block;
-        margin-top: 15px;
-        font-weight: bold;
-    }
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
 
-    input,
-    textarea {
-        width: 95%;
-        padding: 12px;
-        margin-top: 5px;
-        border: 1px solid #ffb6c6;
-        border-radius: 8px;
-        background: #fff5f7;
-    }
+input,
+textarea {
+    width: 95%;
+    padding: 12px;
+    margin-top: 5px;
+    border: 1px solid #ffb6c6;
+    border-radius: 8px;
+    background: #fff5f7;
+    transition: all 0.3s ease;
+}
 
-    textarea {
-        resize: vertical;
-        height: 100px;
-    }
+textarea {
+    resize: vertical;
+    height: 100px;
+}
 
-    .btn {
-        display: block;
-        width: 100%;
-        padding: 15px;
-        background: #ff7a8a;
-        color: white;
-        text-decoration: none;
-        border-radius: 8px;
-        margin-top: 20px;
-        font-size: 18px;
-        border: none;
-        cursor: pointer;
-    }
+.btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background: #ff7a8a;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 25px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
 
-    .btn:hover {
-        background: #ff5c72;
+.btn:hover {
+    background: #ff5c72;
+}
+
+
+
+
+
+
+
+
+/* Estilo para opções de serviço (Retirada/Entrega) */
+.opcoes-servico {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.opcoes-servico > div {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: #fff5f7;
+    border: 2px solid #ffd1dc;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.opcoes-servico > div:hover {
+    background: #ffeef2;
+    border-color: #ff9fb2;
+}
+
+.opcoes-servico input[type="radio"] {
+    display: none;
+}
+
+.opcoes-servico label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    cursor: pointer;
+    font-weight: normal;
+    flex-grow: 1;
+    padding: 5px 0;
+}
+
+.opcoes-servico label::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ff9fb2;
+    border-radius: 50%;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.opcoes-servico input[type="radio"]:checked + label::before {
+    background: #ff7a8a;
+    border-color: #ff7a8a;
+    box-shadow: inset 0 0 0 4px white;
+}
+
+.opcoes-servico input[type="radio"]:checked ~ div {
+    background: #ffeef2;
+    border-color: #ff7a8a;
+}
+
+/* Campos de endereço */
+.campos-endereco {
+    margin-top: 15px;
+    padding: 15px;
+    background: #fff9fa;
+    border-radius: 8px;
+    border: 1px dashed #ffb6c6;
+    animation: fadeIn 0.5s ease;
+}
+
+.campos-endereco label {
+    margin-top: 10px;
+}
+
+.campos-endereco input {
+    background: #ffffff;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
     }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilo para campos readonly */
+input[readonly] {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+    color: #666;
+}
+
+input[readonly]:focus {
+    border-color: #ffb6c6;
+    outline: none;
+}
+
+/* Estilo para campos de endereço quando visíveis */
+.campos-endereco label {
+    margin-top: 10px;
+}
+
+.campos-endereco input {
+    background: #ffffff;
+}
+
+
+
+
+/* Estilo para opções de pagamento */
+.opcoes-pagamento {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.opcoes-pagamento > div {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: #fff5f7;
+    border: 2px solid #ffd1dc;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.opcoes-pagamento > div:hover {
+    background: #ffeef2;
+    border-color: #ff9fb2;
+}
+
+.opcoes-pagamento input[type="radio"] {
+    display: none;
+}
+
+.opcoes-pagamento label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    cursor: pointer;
+    font-weight: normal;
+    flex-grow: 1;
+    padding: 5px 0;
+}
+
+.opcoes-pagamento label::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ff9fb2;
+    border-radius: 50%;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.opcoes-pagamento input[type="radio"]:checked + label::before {
+    background: #ff7a8a;
+    border-color: #ff7a8a;
+    box-shadow: inset 0 0 0 4px white;
+}
+
+.opcoes-pagamento input[type="radio"]:checked ~ div {
+    background: #ffeef2;
+    border-color: #ff7a8a;
+}
+
+/* Ícones para métodos de serviço */
+.opcoes-servico label[for="servico-retirada"]::after {
+    content: "🏪";
+    font-size: 18px;
+}
+
+.opcoes-servico label[for="servico-entrega"]::after {
+    content: "🚚";
+    font-size: 18px;
+}
+
+/* Ícones para métodos de pagamento */
+.opcoes-pagamento label[for="pagamento-dinheiro"]::after {
+    content: "💰";
+    font-size: 18px;
+}
+
+.opcoes-pagamento label[for="pagamento-cartao"]::after {
+    content: "💳";
+    font-size: 18px;
+}
+
+.opcoes-pagamento label[for="pagamento-pix"]::after {
+    content: "⚡";
+    font-size: 18px;
+}
+
+/* Estilo para campo desabilitado durante carregamento */
+.input-loading {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    opacity: 0.7;
+    pointer-events: none;
+    border-color: #ddd;
+}
+
+/* Placeholder especial para carregamento */
+.input-loading::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* Estilo do calendário Flatpickr */
+.flatpickr-calendar {
+    font-family: inherit;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.flatpickr-day.selected, 
+.flatpickr-day.selected:hover {
+    background-color: #ff6b6b;
+    border-color: #ff6b6b;
+}
+
+.flatpickr-day.disabled {
+    color: #ccc;
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+.flatpickr-day.disabled:hover {
+    background-color: #f8f9fa;
+}
