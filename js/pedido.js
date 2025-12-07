@@ -1,68 +1,44 @@
 function carregarCarrinho() {
     let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-    let lista = document.getElementById("lista-carrinho");
+    
+    // Altere a referência para o elemento textarea (que agora tem o ID lista-carrinho)
+    let textareaDoces = document.getElementById("lista-carrinho"); 
+    
+    let totalElemento = document.getElementById("total");
     let total = 0;
+    
+    // Inicializa as strings que serão preenchidas
+    let itensParaTextarea = "";
 
-    // Limpa o textarea
-    lista.value = "Resumo do Pedido:\n\n";
-
-    carrinho.forEach((item) => {
+    carrinho.forEach((item, index) => {
+        // 1. Cálculo do preço e total (mantido)
         let precoNum = parseFloat(item.preco.replace("R$", "").replace(",", "."));
-        total += precoNum * item.quantidade;
-
-        lista.value += `${item.quantidade}x ${item.nome} — ${item.preco}\n`;
+        let subtotalItem = precoNum * item.quantidade;
+        total += subtotalItem;
+        
+        // Formato para o textarea: Quantidade x Nome — R$ Valor Unitário
+        itensParaTextarea += `${item.quantidade}x ${item.nome} — ${item.preco}\n`;
     });
 
-    document.getElementById("total").value = "R$ " + total.toFixed(2).replace(".", ",");
-}
-
-// Evita datas passadas
-let hoje = new Date().toISOString().split("T")[0];
-document.querySelector('input[name="data"]').setAttribute("min", hoje);
-
-// Verifica a disponibilidade sempre que o usuário muda a data
-document.querySelector('input[name="data"]').addEventListener("change", async function() {
-    let data = this.value;
-    if (!data) return;
-
-    let resp = await fetch(`${API_URL}?data=${data}`);
-    let status = await resp.text();
-
-    if (status === "indisponivel") {
-        alert("⚠️ Essa data está cheia de encomendas. Escolha outra!");
-        this.value = "";
-    }
-});
-
-// Envio do formulário
-document.querySelector("form").addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    let payload = {
-        nome: document.querySelector('input[name="nome"]').value,
-        telefone: document.querySelector('input[name="telefone"]').value,
-        doces_escolhidos: document.querySelector('#lista-carrinho').value,
-        data: document.querySelector('input[name="data"]').value,
-        obs: document.querySelector('textarea[name="obs"]').value,
-        total: document.querySelector('#total').value
-    };
-
-    let resp = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
-
-    let txt = await resp.text();
-    console.log("Retorno:", txt);
-
-    if (txt.trim() === "salvo") {
-        alert("Pedido enviado com sucesso!");
-        localStorage.removeItem("carrinho");
-        window.location.href = "index.html";
+    // 2. Preenche o <textarea>
+    // Se o carrinho estiver vazio, exibe uma mensagem.
+    if (itensParaTextarea === "") {
+        textareaDoces.value = "Nenhum doce escolhido.";
     } else {
-        alert("Erro ao salvar pedido: " + txt);
+        textareaDoces.value = itensParaTextarea.trim();
     }
-});
+    
+    // 3. Preenche o <input id="total">
+    let totalFormatado = "R$ " + total.toFixed(2).replace(".", ",");
+    
+    // Se o <input id="total"> for usado apenas para exibição
+    totalElemento.value = totalFormatado; 
+    
+    // Se o <input id="total"> for usado para o formulário, mas você quer o valor numérico puro
+    // O valor do input deve ser o valor numérico, o R$ é apenas para exibição.
+    // Use o `total.toFixed(2).replace(".", ",")` para o valor que será enviado, se preferir.
+    // Exemplo para o valor ser enviado no formato pt-BR (R$ 10,50):
+    // totalElemento.value = total.toFixed(2).replace(".", ",");
+}
 
 carregarCarrinho();

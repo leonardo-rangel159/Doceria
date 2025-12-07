@@ -1,1 +1,5 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbywnivavfbx3dOk_8443bu0nahC-mU9y-CK9dRgTqAsMLOgb33UCs9t9lLyeuLG0b5b6w/exec";
+// Use esta URL após publicar como Web App
+const API_URL = 'https://script.google.com/macros/s/AKfycbwbnvbjQL8Z1khXKYH39_-TF6U7hIDxW7zRQpFDAafpVQ2VMW8cqh6WMVm4JXPZB-yfgA/exec';
+
+// URL do seu Google Apps Script (substitua pela sua)
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbnvbjQL8Z1khXKYH39_-TF6U7hIDxW7zRQpFDAafpVQ2VMW8cqh6WMVm4JXPZB-yfgA/exec';
