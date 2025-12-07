@@ -5,8 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finalizar Pedido</title>
+    
     <link rel="stylesheet" href="Css/styles.css">
     <link rel="stylesheet" href="Css/pedido.css">
+    <!-- Adicione o CSS do Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 
 <body>
@@ -25,9 +28,9 @@
     </section>
 
     <main class="container carrinho-container">
-        <form id="itens-carrinho" name="pedido" class="formulario">
+        <form id="itens-carrinho" name="pedido" class="formulario" method="POST">
 
-            <h3>Dados do Cliente</h3>
+            <h3 class="topF">Dados do Cliente</h3>
 
             <label>Nome completo:</label>
             <input type="text" name="nome" placeholder="Ex: Maria Andrade" required>
@@ -39,9 +42,42 @@
             
             <label>Doces escolhidos:</label>
             <textarea id="lista-carrinho" name="doces_escolhidos" readonly></textarea>
+            
+            <h3>Tipo de Serviço</h3>
+            
+            <div class="opcoes-servico">
+    <div>
+        <input type="radio" id="servico-retirada" name="tipo_servico" value="retirada" checked>
+        <label for="servico-retirada">🏪 Retirada na Loja</label>
+    </div>
+
+    <div>
+        <input type="radio" id="servico-entrega" name="tipo_servico" value="entrega">
+        <label for="servico-entrega">🚚 Entrega</label>
+    </div>
+</div>
+
+<!-- Campos de endereço (inicialmente escondidos) -->
+<div id="campos-endereco" class="campos-endereco" style="display: none;">
+    <label>Rua:</label>
+    <input type="text" name="rua" placeholder="Av. Sete de Setembro" required>
+    
+    <label>Bairro:</label>
+    <input type="text" name="bairro" placeholder="Centro" required>
+    
+    <label>Número:</label>
+    <input type="text" name="numero" placeholder="98" required>
+
+    <label>Cidade:</label>
+    <input type="text" name="cidade" placeholder="São Fidelis" value="São Fidelis" readonly>
+
+    <label>Referência:</label>
+    <input type="text" name="referencia" placeholder="Próximo ao mercado, ponto de referência...">
+</div>
 
             <label>Data desejada para retirada/entrega:</label>
-            <input type="date" name="data" required>
+	    <input id="date" type="text" name="data" placeholder="Carregando calendário..." required class="input-loading">
+            
 
             <label>Observações:</label>
             <textarea name="obs" placeholder="Ex: Sem lactose, presente, embrulho especial..."></textarea>
@@ -49,13 +85,39 @@
             <label>Valor total:</label>
             <input id="total" type="text" name="total" readonly>
 
+	   <h3>Selecione o Método de Pagamento:</h3>
 
+<div class="opcoes-pagamento">
+    <div>
+        <input type="radio" id="pagamento-dinheiro" name="metodo_pagamento" value="dinheiro" checked>
+        <label for="pagamento-dinheiro">Dinheiro</label>
+    </div>
+
+    <div>
+        <input type="radio" id="pagamento-cartao" name="metodo_pagamento" value="cartao">
+        <label for="pagamento-cartao">Cartão (débito/crédito)</label>
+    </div>
+
+    <div>
+        <input type="radio" id="pagamento-pix" name="metodo_pagamento" value="pix">
+        <label for="pagamento-pix">Pix</label>
+    </div>
+</div>
+	    
             <button type="submit" class="btn">Enviar Pedido</button>
         </form>
     </main>
+    
 
     <script src="js/config.js"></script><!-- Url da API -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="js/agendaBloqueio.js"></script>
+    <script src="js/servico.js"></script> <!-- Adicione esta linha -->
     <script src="js/pedido.js"></script>
+    
+    <script src="js/enviogoogle.js"></script>
+    <script src="js/enviarpedido.js"></script>
+
 </body>
 
 </html>
