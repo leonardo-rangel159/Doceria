@@ -102,6 +102,9 @@ async function enviarPedido(event) {
     try {
         // 1. Coleta dados
         const dados = coletarDadosPedido();
+
+        // ADICIONE ESTE LOG AQUI PARA VERIFICAR OS DADOS COLETADOS
+        console.log('Dados COLETADOS do formulário:', dados);
         
         // 2. Valida dados
         const erros = validarPedido(dados);
