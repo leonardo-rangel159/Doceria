@@ -6,11 +6,11 @@
 function coletarDadosPedido() {
     const form = document.getElementById('itens-carrinho');
     
-    // Dados básicos
+    // Dados básicos (mantendo a chave original para evitar erros)
     const dados = {
         nome: form.nome.value,
         telefone: form.telefone.value,
-        doces_escolhidos: form.doces_escolhidos.value,
+        doces_escolhidos: form.doces_escolhidos.value, // Nome da chave do objeto JS
         data: form.data.value,
         obs: form.obs.value,
         total: form.total.value,
@@ -18,14 +18,27 @@ function coletarDadosPedido() {
         tipo_servico: document.querySelector('input[name="tipo_servico"]:checked').value
     };
     
-    // Se for entrega, adiciona dados de endereço
+    // ⚠️ NOVO: Combina campos de endereço em uma string única
+    let enderecoCompleto = "";
     if (dados.tipo_servico === 'entrega') {
-        dados.rua = form.rua.value;
-        dados.bairro = form.bairro.value;
-        dados.numero = form.numero.value;
-        dados.cidade = form.cidade.value;
-        dados.referencia = form.referencia.value;
+        const rua = form.rua.value || 'N/A';
+        const bairro = form.bairro.value || 'N/A';
+        const numero = form.numero.value || 'S/N';
+        const cidade = form.cidade.value || 'N/A';
+        const referencia = form.referencia.value || '';
+        
+        enderecoCompleto = `${rua}, ${bairro} - ${numero} (${cidade})`;
+        if (referencia) {
+            enderecoCompleto += ` | Ref: ${referencia}`;
+        }
     }
+    
+    // Adiciona o campo combinado ao objeto de dados
+    dados.endereco_completo = enderecoCompleto;
+    
+    // Remove os campos individuais do objeto (não são mais necessários no Apps Script)
+    // Os campos 'rua', 'bairro', 'numero', 'cidade', 'referencia' serão ignorados pelo Apps Script
+    // se não estiverem no array CABECALHOS, mas é bom limpá-los se eles fossem usados para outros fins.
     
     return dados;
 }
