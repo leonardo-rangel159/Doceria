@@ -16,8 +16,7 @@ async function enviarParaGoogleScript(dados) {
         
         // Envia para Google Apps Script
         const response = await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'cors',
+            
             headers: {
                 'Content-Type': 'application/json',
             },
