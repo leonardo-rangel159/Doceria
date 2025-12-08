@@ -1,184 +1,303 @@
 // js/enviarpedido.js
 
 /**
- * Coleta todos os dados do formulário e formata para envio
+ * Configurações e constantes
  */
+const CONFIG = {
+  emojis: {
+    dinheiro: '💰',
+    cartao: '💳',
+    pix: '⚡',
+    retirada: '🏪',
+    entrega: '🚚'
+  },
+  fallbacks: {
+    endereco: 'N/A',
+    numero: 'S/N',
+    referencia: ''
+  }
+};
 
-// js/enviarpedido.js
+/**
+ * Cache de elementos DOM
+ */
+const DOM = {
+  form: null,
+  elementos: {}
+};
 
+/**
+ * Inicializa o módulo
+ */
+function initEnvioPedido() {
+  DOM.form = document.getElementById('itens-carrinho');
+  
+  if (!DOM.form) {
+    console.error('Formulário não encontrado');
+    return;
+  }
+  
+  cacheElementos();
+  setupEventListeners();
+}
+
+/**
+ * Cache de elementos frequentemente acessados
+ */
+function cacheElementos() {
+  const campos = ['nome', 'telefone', 'doces_escolhidos', 'data', 'obs', 
+                  'total', 'rua', 'bairro', 'numero', 'cidade', 'referencia'];
+  
+  campos.forEach(campo => {
+    DOM.elementos[campo] = DOM.form.querySelector(`[name="${campo}"]`);
+  });
+}
+
+/**
+ * Configura event listeners
+ */
+function setupEventListeners() {
+  const botaoEnviar = DOM.form.querySelector('button[type="submit"]');
+  
+  if (botaoEnviar) {
+    botaoEnviar.addEventListener('click', handleEnviarPedido);
+  }
+}
+
+/**
+ * Obtém valor seguro de um campo do formulário
+ */
+function getFormValue(fieldName) {
+  const elemento = DOM.elementos[fieldName];
+  return elemento ? elemento.value.trim() : '';
+}
+
+/**
+ * Obtém valor de radio button selecionado
+ */
+function getRadioValue(name) {
+  const radio = DOM.form.querySelector(`input[name="${name}"]:checked`);
+  return radio ? radio.value : '';
+}
+
+/**
+ * Formata endereço completo
+ */
+function formatarEnderecoCompleto() {
+  const tipoServico = getRadioValue('tipo_servico');
+  
+  if (tipoServico !== 'entrega') return '';
+  
+  const rua = getFormValue('rua') || CONFIG.fallbacks.endereco;
+  const bairro = getFormValue('bairro') || CONFIG.fallbacks.endereco;
+  const numero = getFormValue('numero') || CONFIG.fallbacks.numero;
+  const cidade = getFormValue('cidade') || CONFIG.fallbacks.endereco;
+  const referencia = getFormValue('referencia');
+  
+  let endereco = `${rua}, ${bairro} - ${numero} (${cidade})`;
+  
+  if (referencia) {
+    endereco += ` | Ref: ${referencia}`;
+  }
+  
+  return endereco;
+}
+
+/**
+ * Processa os doces escolhidos
+ */
+function processarDocesEscolhidos(docesStr) {
+  return docesStr
+    .split('\n')
+    .map(item => item.trim())
+    .filter(item => item !== '')
+    .map(item => {
+      const partes = item.split(' — ');
+      return partes[0]?.trim() || '';
+    })
+    .filter(item => item !== '')
+    .join(', ');
+}
+
+/**
+ * Coleta todos os dados do formulário
+ */
 function coletarDadosPedido() {
-    const form = document.getElementById('itens-carrinho');
-    
-    // Função auxiliar para obter o valor de um campo de forma segura (evita o erro 'undefined')
-    const getFormValue = (field) => {
-        // Se o elemento existe (form[field]), retorna o seu valor. Caso contrário, retorna uma string vazia.
-        return form[field] ? form[field].value : '';
-    };
-
-    // 1. Prepara a string de endereço combinado
-    let enderecoCompleto = "";
-    const tipoServico = document.querySelector('input[name="tipo_servico"]:checked').value;
-    
-    if (tipoServico === 'entrega') {
-        // Usando a função auxiliar para garantir que as variáveis nunca sejam 'undefined'
-        const rua = getFormValue('rua') || 'N/A';
-        const bairro = getFormValue('bairro') || 'N/A';
-        const numero = getFormValue('numero') || 'S/N'; // 'S/N' é uma string de fallback, não 'N/A'
-        const cidade = getFormValue('cidade') || 'N/A';
-        const referencia = getFormValue('referencia') || '';
-        
-        // Formato: (rua, bairro - numero; referencia)
-        enderecoCompleto = `${rua}, ${bairro} - ${numero} (${cidade})`;
-        if (referencia) {
-            enderecoCompleto += ` | Ref: ${referencia}`;
-        }
-    }
-    
-    // 2. Coleta dados e usa o novo campo de endereço
-    const dados = {
-        // Usando a função auxiliar para garantir que os campos básicos também existam, se necessário
-        nome: getFormValue('nome'),
-        telefone: getFormValue('telefone'),
-        
-        doces_escolhidos: getFormValue('doces_escolhidos')
-            .split('\n') 
-            .map(item => {
-                if (item.trim() === '') return null;
-                const partes = item.split(' — ');
-                return partes[0].trim(); 
-            })
-            .filter(item => item !== null)
-            .join(', '),
-        
-        data: getFormValue('data'),
-        obs: getFormValue('obs'),
-        total: getFormValue('total'),
-        metodo_pagamento: document.querySelector('input[name="metodo_pagamento"]:checked') ? document.querySelector('input[name="metodo_pagamento"]:checked').value : '',
-        tipo_servico: tipoServico,
-        
-        // Novo campo para o Apps Script
-        endereco_completo: enderecoCompleto 
-    };
-    
-    return dados;
+  const tipoServico = getRadioValue('tipo_servico');
+  const metodoPagamento = getRadioValue('metodo_pagamento');
+  
+  return {
+    nome: getFormValue('nome'),
+    telefone: getFormValue('telefone'),
+    doces_escolhidos: processarDocesEscolhidos(getFormValue('doces_escolhidos')),
+    data: getFormValue('data'),
+    obs: getFormValue('obs'),
+    total: getFormValue('total'),
+    metodo_pagamento: metodoPagamento,
+    tipo_servico: tipoServico,
+    endereco_completo: formatarEnderecoCompleto(),
+    // Mantém campos individuais para validação
+    rua: getFormValue('rua'),
+    bairro: getFormValue('bairro'),
+    numero: getFormValue('numero'),
+    cidade: getFormValue('cidade'),
+    referencia: getFormValue('referencia')
+  };
 }
 
 /**
- * Formata a mensagem para WhatsApp
- */
-function formatarMensagemWhatsApp(dados) {
-    const emojis = {
-        dinheiro: '💰',
-        cartao: '💳',
-        pix: '⚡',
-        retirada: '🏪',
-        entrega: '🚚'
-    };
-    
-    let mensagem = `*NOVO PEDIDO - SWEET DELÍCIA* 🍰\n\n`;
-    mensagem += `*Cliente:* ${dados.nome}\n`;
-    mensagem += `*Telefone:* ${dados.telefone}\n\n`;
-    
-    mensagem += `*Tipo de Serviço:* ${emojis[dados.tipo_servico]} ${dados.tipo_servico === 'retirada' ? 'Retirada na Loja' : 'Entrega'}\n`;
-    
-    if (dados.tipo_servico === 'entrega') {
-        mensagem += `*Endereço:* ${dados.rua}, ${dados.numero} - ${dados.bairro}, ${dados.cidade}\n`;
-        if (dados.referencia) {
-            mensagem += `*Referência:* ${dados.referencia}\n`;
-        }
-    }
-    
-    mensagem += `\n*Doces Escolhidos:*\n${dados.doces_escolhidos}\n\n`;
-    mensagem += `*Data Desejada:* ${dados.data}\n`;
-    mensagem += `*Método de Pagamento:* ${emojis[dados.metodo_pagamento]} ${dados.metodo_pagamento.charAt(0).toUpperCase() + dados.metodo_pagamento.slice(1)}\n`;
-    mensagem += `*Valor Total:* R$ ${dados.total}\n`;
-    
-    if (dados.obs) {
-        mensagem += `\n*Observações:*\n${dados.obs}\n`;
-    }
-    
-    mensagem += `\n---\nPedido recebido via site Sweet Delícia`;
-    
-    return mensagem;
-}
-
-/**
- * Valida se todos os campos obrigatórios estão preenchidos
+ * Validação de campos obrigatórios
  */
 function validarPedido(dados) {
-    const erros = [];
-    
-    if (!dados.nome.trim()) erros.push('Nome é obrigatório');
-    if (!dados.telefone.trim()) erros.push('Telefone é obrigatório');
-    if (!dados.doces_escolhidos.trim()) erros.push('Nenhum doce selecionado');
-    if (!dados.data.trim()) erros.push('Data é obrigatória');
-    if (!dados.total.trim() || dados.total === 'R$ 0,00') erros.push('Valor total inválido');
-    
-    if (dados.tipo_servico === 'entrega') {
-        if (!dados.rua.trim()) erros.push('Rua é obrigatória para entrega');
-        if (!dados.bairro.trim()) erros.push('Bairro é obrigatório para entrega');
-        if (!dados.numero.trim()) erros.push('Número é obrigatório para entrega');
+  const erros = [];
+  const camposObrigatorios = [
+    { campo: dados.nome, mensagem: 'Nome é obrigatório' },
+    { campo: dados.telefone, mensagem: 'Telefone é obrigatório' },
+    { campo: dados.doces_escolhidos, mensagem: 'Nenhum doce selecionado' },
+    { campo: dados.data, mensagem: 'Data é obrigatória' },
+    { campo: dados.total, mensagem: 'Valor total inválido' }
+  ];
+  
+  // Valida campos gerais
+  camposObrigatorios.forEach(({ campo, mensagem }) => {
+    if (!campo || (typeof campo === 'string' && !campo.trim())) {
+      erros.push(mensagem);
     }
+  });
+  
+  // Valida valor total
+  if (dados.total === 'R$ 0,00' || dados.total === '0,00') {
+    erros.push('Valor total inválido');
+  }
+  
+  // Valida entrega
+  if (dados.tipo_servico === 'entrega') {
+    const camposEntrega = [
+      { campo: dados.rua, mensagem: 'Rua é obrigatória para entrega' },
+      { campo: dados.bairro, mensagem: 'Bairro é obrigatório para entrega' },
+      { campo: dados.numero, mensagem: 'Número é obrigatório para entrega' }
+    ];
     
-    return erros;
+    camposEntrega.forEach(({ campo, mensagem }) => {
+      if (!campo || !campo.trim()) erros.push(mensagem);
+    });
+  }
+  
+  // Valida método de pagamento
+  if (!dados.metodo_pagamento) {
+    erros.push('Método de pagamento é obrigatório');
+  }
+  
+  return erros;
 }
 
 /**
- * Função principal para enviar pedido
+ * Formata mensagem para WhatsApp
  */
-async function enviarPedido(event) {
-    event.preventDefault();
+function formatarMensagemWhatsApp(dados) {
+  const { emojis } = CONFIG;
+  const lines = [];
+  
+  lines.push(`*NOVO PEDIDO - SWEET DELÍCIA* 🍰\n`);
+  lines.push(`*Cliente:* ${dados.nome}`);
+  lines.push(`*Telefone:* ${dados.telefone}\n`);
+  
+  const tipoServico = dados.tipo_servico === 'retirada' ? 'Retirada na Loja' : 'Entrega';
+  lines.push(`*Tipo de Serviço:* ${emojis[dados.tipo_servico]} ${tipoServico}`);
+  
+  if (dados.tipo_servico === 'entrega') {
+    lines.push(`*Endereço:* ${dados.endereco_completo.replace(' | Ref:', '\n*Referência:*')}`);
+  }
+  
+  lines.push(`\n*Doces Escolhidos:*\n${dados.doces_escolhidos}\n`);
+  lines.push(`*Data Desejada:* ${dados.data}`);
+  
+  const metodoPagamentoFormatado = dados.metodo_pagamento 
+    ? `${dados.metodo_pagamento.charAt(0).toUpperCase()}${dados.metodo_pagamento.slice(1)}`
+    : 'Não informado';
     
-    const botao = event.target;
-    const textoOriginal = botao.textContent;
-    
-    try {
-        // 1. Coleta dados
-        const dados = coletarDadosPedido();
-
-        // ADICIONE ESTE LOG AQUI PARA VERIFICAR OS DADOS COLETADOS
-        console.log('Dados COLETADOS do formulário:', dados);
-        
-        // 2. Valida dados
-        const erros = validarPedido(dados);
-        if (erros.length > 0) {
-            alert(`❌ Erros encontrados:\n\n${erros.join('\n')}`);
-            return;
-        }
-        
-        // 3. Desabilita botão e mostra loading
-        botao.disabled = true;
-        botao.textContent = 'Enviando...';
-        
-        // 4. Envia para Google Apps Script
-        await enviarParaGoogleScript(dados);
-        
-        // 5. Envia para WhatsApp
-        await enviarParaWhatsApp(dados);
-        
-        // 6. Feedback de sucesso
-        alert('✅ Pedido enviado com sucesso! Em breve entraremos em contato para confirmar.');
-        
-        // 7. Limpa formulário (opcional)
-        // document.getElementById('itens-carrinho').reset();
-        
-    } catch (error) {
-        console.error('Erro ao enviar pedido:', error);
-        alert(`❌ Erro ao enviar pedido: ${error.message}`);
-    } finally {
-        // Reabilita botão
-        botao.disabled = false;
-        botao.textContent = textoOriginal;
-    }
+  lines.push(`*Método de Pagamento:* ${emojis[dados.metodo_pagamento] || ''} ${metodoPagamentoFormatado}`);
+  lines.push(`*Valor Total:* R$ ${dados.total}`);
+  
+  if (dados.obs) {
+    lines.push(`\n*Observações:*\n${dados.obs}`);
+  }
+  
+  lines.push(`\n---\nPedido recebido via site Sweet Delícia`);
+  
+  return lines.join('\n');
 }
 
-// Adiciona evento ao formulário
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('itens-carrinho');
-    const botaoEnviar = form.querySelector('button[type="submit"]');
+/**
+ * Handle do envio do pedido
+ */
+async function handleEnviarPedido(event) {
+  event.preventDefault();
+  
+  const botao = event.currentTarget;
+  const textoOriginal = botao.textContent;
+  
+  try {
+    // Coleta e valida dados
+    const dados = coletarDadosPedido();
+    console.log('Dados coletados:', dados);
     
-    if (botaoEnviar) {
-        botaoEnviar.addEventListener('click', enviarPedido);
+    const erros = validarPedido(dados);
+    
+    if (erros.length > 0) {
+      showErrorAlert(erros);
+      return;
     }
-});
+    
+    // Prepara botão para envio
+    botao.disabled = true;
+    botao.textContent = 'Enviando...';
+    
+    // Executa envios em paralelo (se possível)
+    await Promise.allSettled([
+      enviarParaGoogleScript(dados),
+      enviarParaWhatsApp(dados)
+    ]);
+    
+    showSuccessAlert();
+    
+  } catch (error) {
+    console.error('Erro no envio:', error);
+    showErrorAlert([error.message || 'Erro desconhecido']);
+  } finally {
+    botao.disabled = false;
+    botao.textContent = textoOriginal;
+  }
+}
 
+/**
+ * Alertas melhorados
+ */
+function showErrorAlert(erros) {
+  const mensagem = Array.isArray(erros) 
+    ? `❌ Erros encontrados:\n\n${erros.join('\n')}`
+    : `❌ ${erros}`;
+  
+  alert(mensagem);
+}
+
+function showSuccessAlert() {
+  alert('✅ Pedido enviado com sucesso! Em breve entraremos em contato para confirmar.');
+}
+
+// Inicializa quando o DOM estiver pronto
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initEnvioPedido);
+} else {
+  initEnvioPedido();
+}
+
+// Exporta funções principais se estiver usando módulos
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    coletarDadosPedido,
+    formatarMensagemWhatsApp,
+    validarPedido,
+    handleEnviarPedido
+  };
+}
