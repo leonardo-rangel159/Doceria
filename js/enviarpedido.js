@@ -3,7 +3,6 @@
 /**
  * Coleta todos os dados do formulário e formata para envio
  */
-// js/enviarpedido.js (Dentro da função coletarDadosPedido)
 
 function coletarDadosPedido() {
     const form = document.getElementById('itens-carrinho');
@@ -35,7 +34,18 @@ function coletarDadosPedido() {
         // '1x Beijinho — R$ 1,50', ele será salvo assim.
         // Se você quiser APENAS o nome do doce, precisará limpar a string aqui.
         // Exemplo: Limpando a parte do preço para ter '1x Beijinho'
-        doces_escolhidos: form.doces_escolhidos.value.split(' — ')[0], 
+        // 💡 SOLUÇÃO CORRIGIDA PARA DOCES_ESCOLHIDOS 💡
+        doces_escolhidos: form.doces_escolhidos.value
+            .split('\n') // 1. Divide a string em linhas (itens individuais)
+            .map(item => {
+                if (item.trim() === '') return null; // Ignora linhas vazias
+                
+                // 2. Para cada linha (ex: '1x Beijinho — R$ 1,50'), pega apenas a parte antes do traço
+                const partes = item.split(' — ');
+                return partes[0].trim(); 
+            })
+            .filter(item => item !== null) // 3. Remove os itens nulos (linhas vazias)
+            .join(', '), // 4. Junta tudo em uma string separada por vírgula para a planilha
         
         data: form.data.value,
         obs: form.obs.value,
