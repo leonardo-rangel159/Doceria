@@ -4,19 +4,28 @@
  * Coleta todos os dados do formulário e formata para envio
  */
 
+// js/enviarpedido.js
+
 function coletarDadosPedido() {
     const form = document.getElementById('itens-carrinho');
     
+    // Função auxiliar para obter o valor de um campo de forma segura (evita o erro 'undefined')
+    const getFormValue = (field) => {
+        // Se o elemento existe (form[field]), retorna o seu valor. Caso contrário, retorna uma string vazia.
+        return form[field] ? form[field].value : '';
+    };
+
     // 1. Prepara a string de endereço combinado
     let enderecoCompleto = "";
     const tipoServico = document.querySelector('input[name="tipo_servico"]:checked').value;
     
     if (tipoServico === 'entrega') {
-        const rua = form.rua.value || 'N/A';
-        const bairro = form.bairro.value || 'N/A';
-        const numero = form.numero.value || 'S/N';
-        const cidade = form.cidade.value || 'N/A';
-        const referencia = form.referencia.value || '';
+        // Usando a função auxiliar para garantir que as variáveis nunca sejam 'undefined'
+        const rua = getFormValue('rua') || 'N/A';
+        const bairro = getFormValue('bairro') || 'N/A';
+        const numero = getFormValue('numero') || 'S/N'; // 'S/N' é uma string de fallback, não 'N/A'
+        const cidade = getFormValue('cidade') || 'N/A';
+        const referencia = getFormValue('referencia') || '';
         
         // Formato: (rua, bairro - numero; referencia)
         enderecoCompleto = `${rua}, ${bairro} - ${numero} (${cidade})`;
@@ -27,30 +36,24 @@ function coletarDadosPedido() {
     
     // 2. Coleta dados e usa o novo campo de endereço
     const dados = {
-        nome: form.nome.value,
-        telefone: form.telefone.value,
+        // Usando a função auxiliar para garantir que os campos básicos também existam, se necessário
+        nome: getFormValue('nome'),
+        telefone: getFormValue('telefone'),
         
-        // ATENÇÃO: Se o campo doces_escolhidos vier formatado assim:
-        // '1x Beijinho — R$ 1,50', ele será salvo assim.
-        // Se você quiser APENAS o nome do doce, precisará limpar a string aqui.
-        // Exemplo: Limpando a parte do preço para ter '1x Beijinho'
-        // 💡 SOLUÇÃO CORRIGIDA PARA DOCES_ESCOLHIDOS 💡
-        doces_escolhidos: form.doces_escolhidos.value
-            .split('\n') // 1. Divide a string em linhas (itens individuais)
+        doces_escolhidos: getFormValue('doces_escolhidos')
+            .split('\n') 
             .map(item => {
-                if (item.trim() === '') return null; // Ignora linhas vazias
-                
-                // 2. Para cada linha (ex: '1x Beijinho — R$ 1,50'), pega apenas a parte antes do traço
+                if (item.trim() === '') return null;
                 const partes = item.split(' — ');
                 return partes[0].trim(); 
             })
-            .filter(item => item !== null) // 3. Remove os itens nulos (linhas vazias)
-            .join(', '), // 4. Junta tudo em uma string separada por vírgula para a planilha
+            .filter(item => item !== null)
+            .join(', '),
         
-        data: form.data.value,
-        obs: form.obs.value,
-        total: form.total.value,
-        metodo_pagamento: document.querySelector('input[name="metodo_pagamento"]:checked').value,
+        data: getFormValue('data'),
+        obs: getFormValue('obs'),
+        total: getFormValue('total'),
+        metodo_pagamento: document.querySelector('input[name="metodo_pagamento"]:checked') ? document.querySelector('input[name="metodo_pagamento"]:checked').value : '',
         tipo_servico: tipoServico,
         
         // Novo campo para o Apps Script
