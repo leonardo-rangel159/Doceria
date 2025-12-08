@@ -3,42 +3,49 @@
 /**
  * Coleta todos os dados do formulário e formata para envio
  */
+// js/enviarpedido.js (Dentro da função coletarDadosPedido)
+
 function coletarDadosPedido() {
     const form = document.getElementById('itens-carrinho');
     
-    // Dados básicos (mantendo a chave original para evitar erros)
-    const dados = {
-        nome: form.nome.value,
-        telefone: form.telefone.value,
-        doces_escolhidos: form.doces_escolhidos.value, // Nome da chave do objeto JS
-        data: form.data.value,
-        obs: form.obs.value,
-        total: form.total.value,
-        metodo_pagamento: document.querySelector('input[name="metodo_pagamento"]:checked').value,
-        tipo_servico: document.querySelector('input[name="tipo_servico"]:checked').value
-    };
-    
-    // ⚠️ NOVO: Combina campos de endereço em uma string única
+    // 1. Prepara a string de endereço combinado
     let enderecoCompleto = "";
-    if (dados.tipo_servico === 'entrega') {
+    const tipoServico = document.querySelector('input[name="tipo_servico"]:checked').value;
+    
+    if (tipoServico === 'entrega') {
         const rua = form.rua.value || 'N/A';
         const bairro = form.bairro.value || 'N/A';
         const numero = form.numero.value || 'S/N';
         const cidade = form.cidade.value || 'N/A';
         const referencia = form.referencia.value || '';
         
+        // Formato: (rua, bairro - numero; referencia)
         enderecoCompleto = `${rua}, ${bairro} - ${numero} (${cidade})`;
         if (referencia) {
             enderecoCompleto += ` | Ref: ${referencia}`;
         }
     }
     
-    // Adiciona o campo combinado ao objeto de dados
-    dados.endereco_completo = enderecoCompleto;
-    
-    // Remove os campos individuais do objeto (não são mais necessários no Apps Script)
-    // Os campos 'rua', 'bairro', 'numero', 'cidade', 'referencia' serão ignorados pelo Apps Script
-    // se não estiverem no array CABECALHOS, mas é bom limpá-los se eles fossem usados para outros fins.
+    // 2. Coleta dados e usa o novo campo de endereço
+    const dados = {
+        nome: form.nome.value,
+        telefone: form.telefone.value,
+        
+        // ATENÇÃO: Se o campo doces_escolhidos vier formatado assim:
+        // '1x Beijinho — R$ 1,50', ele será salvo assim.
+        // Se você quiser APENAS o nome do doce, precisará limpar a string aqui.
+        // Exemplo: Limpando a parte do preço para ter '1x Beijinho'
+        doces_escolhidos: form.doces_escolhidos.value.split(' — ')[0], 
+        
+        data: form.data.value,
+        obs: form.obs.value,
+        total: form.total.value,
+        metodo_pagamento: document.querySelector('input[name="metodo_pagamento"]:checked').value,
+        tipo_servico: tipoServico,
+        
+        // Novo campo para o Apps Script
+        endereco_completo: enderecoCompleto 
+    };
     
     return dados;
 }
