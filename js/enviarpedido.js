@@ -1,5 +1,7 @@
 // js/enviarpedido.js
 
+// js/enviarpedido.js
+
 /**
  * Configurações e constantes
  */
@@ -136,7 +138,7 @@ function coletarDadosPedido() {
     metodo_pagamento: metodoPagamento,
     tipo_servico: tipoServico,
     endereco_completo: formatarEnderecoCompleto(),
-    // Mantém campos individuais para validação
+    // Campos adicionais para validação
     rua: getFormValue('rua'),
     bairro: getFormValue('bairro'),
     numero: getFormValue('numero'),
@@ -154,38 +156,39 @@ function validarPedido(dados) {
     { campo: dados.nome, mensagem: 'Nome é obrigatório' },
     { campo: dados.telefone, mensagem: 'Telefone é obrigatório' },
     { campo: dados.doces_escolhidos, mensagem: 'Nenhum doce selecionado' },
-    { campo: dados.data, mensagem: 'Data é obrigatória' },
-    { campo: dados.total, mensagem: 'Valor total inválido' }
+    { campo: dados.data, mensagem: 'Data é obrigatória' }
   ];
   
   // Valida campos gerais
   camposObrigatorios.forEach(({ campo, mensagem }) => {
-    if (!campo || (typeof campo === 'string' && !campo.trim())) {
+    if (!campo) {
       erros.push(mensagem);
     }
   });
   
   // Valida valor total
-  if (dados.total === 'R$ 0,00' || dados.total === '0,00') {
+  if (!dados.total || dados.total === 'R$ 0,00' || dados.total === '0,00') {
     erros.push('Valor total inválido');
-  }
-  
-  // Valida entrega
-  if (dados.tipo_servico === 'entrega') {
-    const camposEntrega = [
-      { campo: dados.rua, mensagem: 'Rua é obrigatória para entrega' },
-      { campo: dados.bairro, mensagem: 'Bairro é obrigatório para entrega' },
-      { campo: dados.numero, mensagem: 'Número é obrigatório para entrega' }
-    ];
-    
-    camposEntrega.forEach(({ campo, mensagem }) => {
-      if (!campo || !campo.trim()) erros.push(mensagem);
-    });
   }
   
   // Valida método de pagamento
   if (!dados.metodo_pagamento) {
     erros.push('Método de pagamento é obrigatório');
+  }
+  
+  // Valida entrega
+  if (dados.tipo_servico === 'entrega') {
+    if (!dados.rua || dados.rua.trim() === '') {
+      erros.push('Rua é obrigatória para entrega');
+    }
+    
+    if (!dados.bairro || dados.bairro.trim() === '') {
+      erros.push('Bairro é obrigatório para entrega');
+    }
+    
+    if (!dados.numero || dados.numero.trim() === '') {
+      erros.push('Número é obrigatório para entrega');
+    }
   }
   
   return erros;
@@ -205,8 +208,8 @@ function formatarMensagemWhatsApp(dados) {
   const tipoServico = dados.tipo_servico === 'retirada' ? 'Retirada na Loja' : 'Entrega';
   lines.push(`*Tipo de Serviço:* ${emojis[dados.tipo_servico]} ${tipoServico}`);
   
-  if (dados.tipo_servico === 'entrega') {
-    lines.push(`*Endereço:* ${dados.endereco_completo.replace(' | Ref:', '\n*Referência:*')}`);
+  if (dados.tipo_servico === 'entrega' && dados.endereco_completo) {
+    lines.push(`*Endereço:* ${dados.endereco_completo}`);
   }
   
   lines.push(`\n*Doces Escolhidos:*\n${dados.doces_escolhidos}\n`);
@@ -219,7 +222,7 @@ function formatarMensagemWhatsApp(dados) {
   lines.push(`*Método de Pagamento:* ${emojis[dados.metodo_pagamento] || ''} ${metodoPagamentoFormatado}`);
   lines.push(`*Valor Total:* R$ ${dados.total}`);
   
-  if (dados.obs) {
+  if (dados.obs && dados.obs.trim() !== '') {
     lines.push(`\n*Observações:*\n${dados.obs}`);
   }
   
@@ -253,17 +256,18 @@ async function handleEnviarPedido(event) {
     botao.disabled = true;
     botao.textContent = 'Enviando...';
     
-    // Executa envios em paralelo (se possível)
-    await Promise.allSettled([
-      enviarParaGoogleScript(dados),
-      enviarParaWhatsApp(dados)
-    ]);
+    // Envia para Google Apps Script e WhatsApp
+    await enviarParaGoogleScript(dados);
+    await enviarParaWhatsApp(dados);
     
     showSuccessAlert();
     
+    // Limpa formulário (opcional)
+    // DOM.form.reset();
+    
   } catch (error) {
     console.error('Erro no envio:', error);
-    showErrorAlert([error.message || 'Erro desconhecido']);
+    showErrorAlert([error.message || 'Erro desconhecido ao enviar pedido']);
   } finally {
     botao.disabled = false;
     botao.textContent = textoOriginal;
@@ -292,12 +296,18 @@ if (document.readyState === 'loading') {
   initEnvioPedido();
 }
 
-// Exporta funções principais se estiver usando módulos
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    coletarDadosPedido,
-    formatarMensagemWhatsApp,
-    validarPedido,
-    handleEnviarPedido
-  };
+// Mantém compatibilidade com o código original
+function enviarPedido(event) {
+  handleEnviarPedido(event);
 }
+
+// Adiciona evento ao formulário para compatibilidade
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('itens-carrinho');
+  const botaoEnviar = form ? form.querySelector('button[type="submit"]') : null;
+  
+  if (botaoEnviar && !botaoEnviar.hasListener) {
+    botaoEnviar.addEventListener('click', enviarPedido);
+    botaoEnviar.hasListener = true; // Previne duplicação
+  }
+});
