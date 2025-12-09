@@ -35,20 +35,7 @@ async function handleEnviarPedido(event) {
   const textoOriginal = botao.textContent;
   
   try {
-    // Coleta e valida dados
-    const dados = coletarDadosPedido();
-    console.log('Dados coletados:', dados);
-    
-    const erros = validarPedido(dados);
-    
-    if (erros.length > 0) {
-      showErrorAlert(erros);
-      return;
-    }
-    
-    // Prepara botão para envio
-    botao.disabled = true;
-    botao.textContent = 'Enviando...';
+    // ... (código existente de coleta e validação)
     
     // Envia para Google Apps Script
     await enviarParaGoogleScript(dados);
@@ -59,14 +46,20 @@ async function handleEnviarPedido(event) {
       await enviarParaWhatsApp(mensagem);
     }
     
-    showSuccessAlert();
+    // MOSTRA ALERTA DE SUCESSO
+    alert('✅ Pedido enviado com sucesso! Em breve entraremos em contato para confirmar.');
     
-    // Limpa carrinho após sucesso
+    // 🔥 LIMPA O CARRINHO (LOCALSTORAGE)
     localStorage.removeItem('carrinho');
+    
+    // 🔥 REDIRECIONA PARA A PÁGINA INICIAL
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 1500); // Espera 1.5 segundos antes de redirecionar
     
   } catch (error) {
     console.error('Erro no envio:', error);
-    showErrorAlert([error.message || 'Erro desconhecido ao enviar pedido']);
+    alert('❌ Erro ao enviar pedido: ' + error.message);
   } finally {
     botao.disabled = false;
     botao.textContent = textoOriginal;
@@ -96,3 +89,4 @@ export function initEnvioPedido() {
 export function enviarPedido(event) {
   handleEnviarPedido(event);
 }
+
