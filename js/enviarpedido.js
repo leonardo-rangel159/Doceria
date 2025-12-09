@@ -35,31 +35,57 @@ async function handleEnviarPedido(event) {
   const textoOriginal = botao.textContent;
   
   try {
-    // ... (código existente de coleta e validação)
+    // 1. Coleta e valida dados
+    const dados = coletarDadosPedido();
+    console.log('Dados coletados:', dados);
     
-    // Envia para Google Apps Script
+    const erros = validarPedido(dados);
+    
+    if (erros.length > 0) {
+      showErrorAlert(erros);
+      return;
+    }
+    
+    // 2. Prepara botão para envio
+    botao.disabled = true;
+    botao.textContent = 'Enviando...';
+    
+    // 3. Envia para Google Apps Script
     await enviarParaGoogleScript(dados);
     
-    // Envia para WhatsApp (se configurado)
+    // 4. Envia para WhatsApp (opcional)
     if (formatarMensagemWhatsApp) {
       const mensagem = formatarMensagemWhatsApp(dados);
       await enviarParaWhatsApp(mensagem);
     }
     
-    // MOSTRA ALERTA DE SUCESSO
+    // 5. SUCESSO - ADICIONE AQUI O CÓDIGO
     alert('✅ Pedido enviado com sucesso! Em breve entraremos em contato para confirmar.');
     
-    // 🔥 LIMPA O CARRINHO (LOCALSTORAGE)
-    localStorage.removeItem('carrinho');
+    // 🔥 COLE A FUNÇÃO AQUI DENTRO:
+    // Confirma com o usuário (opcional)
+    const confirmar = confirm('Pedido enviado com sucesso! Deseja voltar à página inicial?');
     
-    // 🔥 REDIRECIONA PARA A PÁGINA INICIAL
-    setTimeout(() => {
+    if (confirmar) {
+      // Limpa apenas o carrinho, mantendo outras configurações
+      localStorage.removeItem('carrinho');
+      
+      // Redireciona
       window.location.href = 'index.html';
-    }, 1500); // Espera 1.5 segundos antes de redirecionar
+    } else {
+      // Permanece na página, mas limpa o carrinho
+      localStorage.removeItem('carrinho');
+      
+      // Atualiza a exibição do carrinho na página atual
+      if (typeof carregarCarrinho === 'function') {
+        carregarCarrinho();
+      }
+    }
+    // 🔥 FIM DO CÓDIGO PARA COLAR
     
   } catch (error) {
     console.error('Erro no envio:', error);
-    alert('❌ Erro ao enviar pedido: ' + error.message);
+    showErrorAlert([error.message || 'Erro desconhecido ao enviar pedido']);
   } finally {
     botao.disabled = false;
     botao.textContent = textoOriginal;

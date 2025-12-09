@@ -25,26 +25,3 @@ export function showSuccessAlert() {
   }, 2000);
 }
 
-function limparCarrinhoERedirecionar() {
-  // Confirma com o usuário (opcional)
-  const confirmar = confirm('Pedido enviado com sucesso! Deseja voltar à página inicial?');
-  
-  if (confirmar) {
-    // Limpa apenas o carrinho, mantendo outras configurações
-    localStorage.removeItem('carrinho');
-    
-    // Redireciona
-    window.location.href = 'index.html';
-  } else {
-    // Permanece na página, mas limpa o carrinho
-    localStorage.removeItem('carrinho');
-    
-    // Atualiza a exibição do carrinho na página atual
-    if (typeof carregarCarrinho === 'function') {
-      carregarCarrinho();
-    }
-  }
-}
-
-// Usar assim após envio bem-sucedido:
-limparCarrinhoERedirecionar();
