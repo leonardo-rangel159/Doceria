@@ -1,4 +1,15 @@
-// Em alerts.js (sugestão anterior)
+// modules/alerts.js
+
+import { CONFIG } from './config.js';
+
+export function showErrorAlert(erros) {
+  const mensagem = Array.isArray(erros) 
+    ? `${CONFIG.mensagens.erroTitulo}\n\n${erros.join('\n')}`
+    : `❌ ${erros}`;
+  
+  alert(mensagem);
+}
+
 export function showSuccessAlert() {
   alert(CONFIG.mensagens.sucesso);
   
@@ -8,10 +19,8 @@ export function showSuccessAlert() {
       clearForm();
     }
     
-    // 🔥 ESTE É O COMANDO QUE LIMPA O CARRINHO:
+    // Redirecionar ou limpar carrinho
     localStorage.removeItem('carrinho');
-    
-    // Redirecionar para página inicial
     window.location.href = 'index.html';
   }, 2000);
 }
