@@ -28,7 +28,7 @@
     </section>
 
     <main class="container carrinho-container">
-        <form id="itens-carrinho" name="pedido" class="formulario" method="POST">
+        <form id="itens-carrinho" name="pedido" class="formulario">
 
             <h3 class="topF">Dados do Cliente</h3>
 
@@ -116,14 +116,6 @@
     
     <script type="module" src="js/enviarpedido.js"></script>
     <script type="module" src="js/init.js"></script>
-
-    <script>
-        // NO carrinho.js, corrija o evento do botão:
-        document.getElementById("finalizar").addEventListener("click", () => {
-        // USE .html na URL
-        window.location.href = "pedido.html"; // ← ADICIONE .html
-        });
-    </script>
 
 </body>
 
