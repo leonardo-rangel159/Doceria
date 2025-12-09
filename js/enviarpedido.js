@@ -1,11 +1,12 @@
 // js/enviarpedido.js (VERSÃO CORRIGIDA)
-//import { CONFIG } from './modulesPedido/config.js';
-import { DOM, cacheElementos } from './modulesPedido/dom-cache.js';
-import { setupEventListeners, clearForm } from './modulesPedido/form-utils.js';
+import { CONFIG } from './modulesPedido/config.js';
+import { DOM } from './modulesPedido/dom-cache.js';
+import { getFormValue } from './modulesPedido/form-utils.js';
 import { coletarDadosPedido } from './modulesPedido/data-collector.js';
 import { validarPedido } from './modulesPedido/validator.js';
-//import { formatarMensagemWhatsApp } from './modulesPedido/whatsapp-formatter.js';
 import { showErrorAlert, showSuccessAlert } from './modulesPedido/alerts.js';
+import { formatarMensagemWhatsApp } from './modulesPedido/whatsapp-formatter.js';
+
 
 // Funções que precisam ser criadas ou ajustadas
 let enviarParaWhatsApp, formatarMensagemWhatsApp;
