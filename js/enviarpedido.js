@@ -71,7 +71,7 @@ async function handleEnviarPedido(event) {
       localStorage.removeItem('carrinho');
       
       // Redireciona
-      window.location.href = 'index.html';
+      //window.location.href = 'index.html';
     } else {
       // Permanece na página, mas limpa o carrinho
       localStorage.removeItem('carrinho');
