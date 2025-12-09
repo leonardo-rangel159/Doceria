@@ -3,10 +3,12 @@
 // Importações
 import { CONFIG } from './modulesPedido/config.js';
 import { DOM, cacheElementos } from './modulesPedido/dom-cache.js';
-import { setupEventListeners } from './modulesPedido/form-utils.js';
+import { setupEventListeners, clearForm } from './modulesPedido/form-utils.js';
 import { coletarDadosPedido } from './modulesPedido/data-collector.js';
 import { validarPedido } from './modulesPedido/validator.js';
+import { enviarParaGoogleScript } from './modulesPedido/enviogoogle.js';
 //import { formatarMensagemWhatsApp } from './modulesPedido/whatsapp-formatter.js';
+//import { enviarParaWhatsApp } from './modulesPedido/whatsapp-sender.js'; // Criar este
 import { showErrorAlert, showSuccessAlert } from './modulesPedido/alerts.js';
 
 /**

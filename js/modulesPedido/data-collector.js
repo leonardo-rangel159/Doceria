@@ -4,17 +4,21 @@ import { getFormValue, getRadioValue } from './form-utils.js';
 import { CONFIG } from './config.js';
 
 export function processarDocesEscolhidos(docesStr) {
-  if (!docesStr) return '';
+  if (!docesStr || docesStr === "Nenhum doce escolhido.") return '';
   
-  return docesStr
+  const itens = docesStr
     .split('\n')
     .map(item => item.trim())
-    .filter(item => item !== '')
+    .filter(item => item && !item.includes('Nenhum doce escolhido'));
+  
+  if (itens.length === 0) return '';
+  
+  return itens
     .map(item => {
-      const partes = item.split(' — ');
-      return partes[0]?.trim() || '';
+      const match = item.match(/^(\d+x)\s+(.+)$/);
+      return match ? match[2].split('—')[0]?.trim() : item.split('—')[0]?.trim();
     })
-    .filter(item => item !== '')
+    .filter(Boolean)
     .join(', ');
 }
 

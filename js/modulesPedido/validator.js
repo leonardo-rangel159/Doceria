@@ -3,6 +3,23 @@
 export function validarPedido(dados) {
   const erros = [];
   
+  // Validação de nome (mínimo 3 caracteres)
+  if (!dados.nome || dados.nome.trim().length < 3) {
+    erros.push('Nome deve ter pelo menos 3 caracteres');
+  }
+  
+  // Validação de telefone (formato brasileiro)
+  const telefoneRegex = /^\(?\d{2}\)?[\s-]?\d{4,5}[\s-]?\d{4}$/;
+  if (!dados.telefone || !telefoneRegex.test(dados.telefone.replace(/\D/g, ''))) {
+    erros.push('Telefone inválido. Use formato: (00) 90000-0000');
+  }
+  
+  // Validação de data (formato dd/mm/yyyy)
+  const dataRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+  if (!dados.data || !dataRegex.test(dados.data)) {
+    erros.push('Data inválida. Use formato: dd/mm/aaaa');
+  }
+  
   // Valida campos gerais
   if (!dados.nome) erros.push('Nome é obrigatório');
   if (!dados.telefone) erros.push('Telefone é obrigatório');

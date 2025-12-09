@@ -6,10 +6,16 @@ export const DOM = {
 };
 
 export function cacheElementos(form) {
-  const campos = ['nome', 'telefone', 'doces_escolhidos', 'data', 'obs', 
-                  'total', 'rua', 'bairro', 'numero', 'cidade', 'referencia'];
+  // Cache de todos os inputs, textareas e selects
+  const campos = form.querySelectorAll('input, textarea, select');
   
   campos.forEach(campo => {
-    DOM.elementos[campo] = form.querySelector(`[name="${campo}"]`);
+    if (campo.name) {
+      DOM.elementos[campo.name] = campo;
+    }
   });
+  
+  // Cache de botões importantes
+  DOM.elementos.botaoEnviar = form.querySelector('button[type="submit"]');
+  DOM.elementos.botaoLimpar = form.querySelector('button[type="reset"]');
 }
