@@ -1,5 +1,5 @@
 // js/enviarpedido.js (VERSÃO CORRIGIDA)
-import { CONFIG } from './modulesPedido/config.js';
+//import { CONFIG } from './modulesPedido/config.js';
 import { DOM, cacheElementos } from './modulesPedido/dom-cache.js';
 import { setupEventListeners, clearForm } from './modulesPedido/form-utils.js';
 import { coletarDadosPedido } from './modulesPedido/data-collector.js';
