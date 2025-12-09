@@ -7,8 +7,8 @@ import { setupEventListeners, clearForm } from './modulesPedido/form-utils.js';
 import { coletarDadosPedido } from './modulesPedido/data-collector.js';
 import { validarPedido } from './modulesPedido/validator.js';
 import { enviarParaGoogleScript } from './modulesPedido/enviogoogle.js';
-//import { formatarMensagemWhatsApp } from './modulesPedido/whatsapp-formatter.js';
-//import { enviarParaWhatsApp } from './modulesPedido/whatsapp-sender.js'; // Criar este
+import { formatarMensagemWhatsApp } from './modulesPedido/whatsapp-formatter.js';
+import { enviarParaWhatsApp } from './modulesPedido/whatsapp-sender.js'; // Criar este
 import { showErrorAlert, showSuccessAlert } from './modulesPedido/alerts.js';
 
 /**
