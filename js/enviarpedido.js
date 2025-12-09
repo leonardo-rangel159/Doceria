@@ -4,23 +4,11 @@ import { DOM, cacheElementos } from './modulesPedido/dom-cache.js';
 import { setupEventListeners } from './modulesPedido/form-utils.js';
 import { coletarDadosPedido } from './modulesPedido/data-collector.js';
 import { validarPedido } from './modulesPedido/validator.js';
+import { enviarParaGoogleScript } from './modulesPedido/enviogoogle.js';
 import { showErrorAlert, showSuccessAlert } from './modulesPedido/alerts.js';
 
 // Funções que precisam ser criadas ou ajustadas
-let enviarParaGoogleScript, enviarParaWhatsApp, formatarMensagemWhatsApp;
-
-// Tenta importar as funções se os módulos existirem
-try {
-  // Importação dinâmica para evitar erros se os arquivos não existirem
-  const googleModule = await import('./modulesPedido/enviogoogle.js');
-  enviarParaGoogleScript = googleModule.enviarParaGoogleScript || googleModule.default;
-} catch (e) {
-  console.warn('Módulo enviogoogle.js não encontrado, usando fallback');
-  enviarParaGoogleScript = async (dados) => {
-    console.log('Fallback: Simulando envio para Google Sheets', dados);
-    return { sucesso: true };
-  };
-}
+let enviarParaWhatsApp, formatarMensagemWhatsApp;
 
 try {
   const whatsappModule = await import('./modulesPedido/whatsapp-formatter.js');
