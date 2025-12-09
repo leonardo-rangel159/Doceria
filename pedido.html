@@ -107,15 +107,6 @@
             <button id="finalizar" type="submit" class="btn">Enviar Pedido</button>
         </form>
     </main>
-    
-
-    <script>
-        // NO carrinho.js, corrija o evento do botão:
-        document.getElementById("finalizar").addEventListener("click", () => {
-        // USE .html na URL
-        window.location.href = "pedido.html"; // ← ADICIONE .html
-        });
-    </script>
 
     <script src="js/config.js"></script><!-- Url da API -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -126,6 +117,14 @@
     <script src="js/enviogoogle.js"></script>
     <script src="js/enviarpedido.js"></script>
     <script type="module" src="js/init.js"></script>
+
+    <script>
+        // NO carrinho.js, corrija o evento do botão:
+        document.getElementById("finalizar").addEventListener("click", () => {
+        // USE .html na URL
+        window.location.href = "pedido.html"; // ← ADICIONE .html
+        });
+    </script>
 
 </body>
 
