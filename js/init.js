@@ -1,16 +1,16 @@
 // js/init.js
+console.log('🔧 init.js carregado');
 
 import { initEnvioPedido, enviarPedido } from './enviarpedido.js';
 
-// Inicializa quando o DOM estiver pronto
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initEnvioPedido);
-} else {
-  initEnvioPedido();
-}
-
-// Compatibilidade global (se necessário)
-window.enviarPedido = enviarPedido;
-window.initEnvioPedido = initEnvioPedido;
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('✅ DOM carregado, inicializando módulo...');
+  try {
+    initEnvioPedido();
+    console.log('✅ Módulo inicializado com sucesso');
+  } catch (error) {
+    console.error('❌ Erro ao inicializar módulo:', error);
+  }
+});
 
 console.log('Módulo de envio de pedidos carregado');

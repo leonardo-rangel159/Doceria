@@ -12,15 +12,4 @@ export function showErrorAlert(erros) {
 
 export function showSuccessAlert() {
   alert(CONFIG.mensagens.sucesso);
-  
-  // Opcional: Limpar formulário após sucesso
-  setTimeout(() => {
-    if (typeof clearForm === 'function') {
-      clearForm();
-    }
-    
-    // Redirecionar ou limpar carrinho
-    localStorage.removeItem('carrinho');
-    window.location.href = 'index.html';
-  }, 2000);
 }
