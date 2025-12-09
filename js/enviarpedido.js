@@ -81,6 +81,8 @@ async function handleEnviarPedido(event) {
         carregarCarrinho();
       }
     }
+
+    alert("alert");
     // 🔥 FIM DO CÓDIGO PARA COLAR
     
   } catch (error) {
