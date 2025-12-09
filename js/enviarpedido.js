@@ -8,24 +8,6 @@ import { showErrorAlert, showSuccessAlert } from './modulesPedido/alerts.js';
 import { formatarMensagemWhatsApp } from './modulesPedido/whatsapp-formatter.js';
 
 
-// Funções que precisam ser criadas ou ajustadas
-let enviarParaWhatsApp, formatarMensagemWhatsApp;
-
-try {
-  const whatsappModule = await import('./modulesPedido/whatsapp-formatter.js');
-  formatarMensagemWhatsApp = whatsappModule.formatarMensagemWhatsApp || whatsappModule.default;
-} catch (e) {
-  console.warn('Módulo whatsapp-formatter.js não encontrado');
-  formatarMensagemWhatsApp = (dados) => `Pedido: ${dados.nome} - ${dados.total}`;
-}
-
-// Função para enviar WhatsApp (mock por enquanto)
-enviarParaWhatsApp = async (dados) => {
-  console.log('Simulando envio WhatsApp:', dados);
-  // Implementação real virá depois
-  return true;
-};
-
 /**
  * Função principal para enviar pedido
  */
