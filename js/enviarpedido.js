@@ -322,6 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+
 // js/enviarpedido.js (VERSÃO CORRIGIDA)
 /*import { CONFIG } from './modulesPedido/config.js';
 import { DOM } from './modulesPedido/dom-cache.js';
