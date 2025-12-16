@@ -53,7 +53,7 @@ function coletarTodosDados() {
   // 3. Formata o endereço completo
   if (dados.tipo_servico === 'entrega' && dados.rua && dados.bairro) {
     dados.endereco_completo = `${dados.rua}, ${dados.numero || 'S/N'} - ${dados.bairro}, ${dados.cidade}`;
-    if (dados.referencia) {
+    if (dados.referencia && dados.referencia.trim() !== '') {
       dados.endereco_completo += ` (Ref: ${dados.referencia})`;
     }
   } else {
