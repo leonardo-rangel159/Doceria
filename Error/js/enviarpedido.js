@@ -70,6 +70,9 @@ function coletarTodosDados() {
   
   // 5. Formata o tipo de serviço para exibição
   dados.tipo_servico_formatado = dados.tipo_servico === 'retirada' ? 'Retirada na loja' : 'Entrega';
+
+  dados.valor_total = dados.total; // Igual ao total
+  dados.observacoes = dados.obs;   // Igual ao obs
   
   console.log('✅ Dados coletados completos:', dados);
   return dados;
